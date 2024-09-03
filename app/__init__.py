@@ -37,3 +37,7 @@ app.secret_key = secrets.token_hex(16)
 
 # Importar las rutas y modelos
 from app import routes, models
+
+# Crear las tablas automáticamente si no existen
+with app.app_context():
+    db.create_all()
