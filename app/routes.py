@@ -5,7 +5,6 @@ from app.models import User, Dog, Vaccine, Medication, Event,  Dose
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime, timedelta, timezone
-import pytz
 from collections import defaultdict
 from flask_mail import Message
 from app.forms import *  # Importa el formulario desde forms.py
@@ -886,11 +885,11 @@ def check_expiration(vaccine_id):
         print(f"Email del usuario: {user_email}")
 
         # Obtener la fecha y hora actuales en UTC
-        now = datetime.now(pytz.utc)
+        now = datetime.now(timezone.utc)
         print(f"Fecha y hora actuales (UTC): {now}")
 
         # Asegurarse de que la fecha de administración también está en UTC
-        date_administered_utc = vaccine.date_administered.astimezone(pytz.utc)
+        date_administered_utc = vaccine.date_administered.astimezone(timezone.utc)
         print(f"Fecha de administración de la vacuna (UTC): {date_administered_utc}")
 
         # Calcular la diferencia de tiempo en segundos
