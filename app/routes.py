@@ -4,7 +4,7 @@ from app import app, db, bcrypt, mail
 from app.models import User, Dog, Vaccine, Medication, Event,  Dose
 from werkzeug.utils import secure_filename
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 from flask_mail import Message
 from app.forms import *  # Importa el formulario desde forms.py
@@ -884,13 +884,16 @@ def check_expiration(vaccine_id):
         user_email = vaccine.dog.owner.email
         print(f"Email del usuario: {user_email}")
 
-        # Obtener la fecha y hora actuales
-        now = datetime.now()
-        print(f"Fecha y hora actuales: {now}")
-        print(f"Fecha de administración de la vacuna: {vaccine.date_administered}")
+        # Obtener la fecha y hora actuales en UTC
+        now = datetime.now(timezone.utc)
+        print(f"Fecha y hora actuales (UTC): {now}")
+
+        # Asegurarse de que la fecha de administración también está en UTC
+        date_administered_utc = vaccine.date_administered.astimezone(timezone.utc)
+        print(f"Fecha de administración de la vacuna (UTC): {date_administered_utc}")
 
         # Calcular la diferencia de tiempo en segundos
-        time_difference = (vaccine.date_administered - now).total_seconds()
+        time_difference = (date_administered_utc - now).total_seconds()
         print(f"Diferencia de tiempo en segundos: {time_difference}")
 
         # Revisar si la diferencia es exactamente o cercana a 24 horas (en segundos)
