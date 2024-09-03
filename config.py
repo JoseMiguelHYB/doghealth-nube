@@ -1,7 +1,8 @@
 class Config:
     SECRET_KEY = 'tu_secreto_aqui'
     #SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:miguel123@localhost/doghealth'
-    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://u6bxjkv8ymamom98:MoaBebmwKrKWZc5D9dUZ@b0owcdtabmtqehtscyph-mysql.services.clever-cloud.com/b0owcdtabmtqehtscyph'
+    #SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://u6bxjkv8ymamom98:MoaBebmwKrKWZc5D9dUZ@b0owcdtabmtqehtscyph-mysql.services.clever-cloud.com/b0owcdtabmtqehtscyph'
+    SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://u6bxjkv8ymamom98:MoaBebmwKrKWZc5D9dUZ@b0owcdtabmtqehtscyph-mysql.services.clever-cloud.com:3306/b0owcdtabmtqehtscyph'   
     SQLALCHEMY_TRACK_MOD0IFICATIONS = False
 
     SECURITY_RECOVERABLE = True  # Habilita la recuperación de contraseñas
