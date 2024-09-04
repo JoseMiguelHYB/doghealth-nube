@@ -979,7 +979,7 @@ def check_expiration_event(event_id):
             print(f"Evento con ID {event_id} no encontrado")
             return jsonify({'status': 'Evento no encontrado'}), 404
 
-        now = datetime.now()
+        now = datetime.now() + timedelta(hours=2)
         print(f"Fecha y hora actuales: {now}")
         print(f"Fecha del evento: {event.event_date}")
 
