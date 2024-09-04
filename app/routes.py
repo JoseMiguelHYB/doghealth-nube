@@ -885,7 +885,7 @@ def check_expiration(vaccine_id):
         print(f"Email del usuario: {user_email}")
 
         # Obtener la fecha y hora actuales
-        now = datetime.now()
+        now = datetime.now() + timedelta(hours=2)
         print(f"Fecha y hora actuales: {now}")
         print(f"Fecha de administración de la vacuna: {vaccine.date_administered}")
 
