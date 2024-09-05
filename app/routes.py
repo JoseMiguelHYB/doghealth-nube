@@ -885,7 +885,7 @@ def check_expiration(vaccine_id):
         print(f"Email del usuario: {user_email}")
 
         # Obtener la fecha y hora actuales
-        now = datetime.now() + timedelta(hours=2)
+        now = datetime.now()
         print(f"Fecha y hora actuales: {now}")
         print(f"Fecha de administración de la vacuna: {vaccine.date_administered}")
 
@@ -968,51 +968,42 @@ def view_events(dog_id):
 
     return render_template('view_events.html', dog=dog, events=events)
 
-@app.route('/check_expiration/<int:vaccine_id>', methods=['POST'])
-def check_expiration(vaccine_id):
+@app.route('/check_expiration_event/<int:event_id>', methods=['POST'])
+def check_expiration_event(event_id):
     try:
-        # Obtener la vacuna por ID
-        vaccine = get_vaccine_by_id(vaccine_id)
-        print(f"Vacuna obtenida: {vaccine}")
+        # Obtener el evento por ID
+        event = get_event_by_id(event_id)
+        print(f"Evento obtenido: {event}")
 
-        if not vaccine:
-            print(f"Vacuna con ID {vaccine_id} no encontrada")
-            return jsonify({'status': 'Vacuna no encontrada'}), 404
+        if not event:
+            print(f"Evento con ID {event_id} no encontrado")
+            return jsonify({'status': 'Evento no encontrado'}), 404
 
-        # Verificar si la notificación ya fue enviada
-        if vaccine.notification_sent:
-            print(f"El email ya ha sido enviado anteriormente para la vacuna ID {vaccine_id}")
-            return jsonify({'status': 'El email ya ha sido enviado anteriormente'})
-
-        # Obtener el email del propietario del perro
-        user_email = vaccine.dog.owner.email
-        print(f"Email del usuario: {user_email}")
-
-        # Obtener la fecha y hora actuales
         now = datetime.now()
         print(f"Fecha y hora actuales: {now}")
-        print(f"Fecha de administración de la vacuna: {vaccine.date_administered}")
+        print(f"Fecha del evento: {event.event_date}")
 
         # Calcular la diferencia de tiempo en segundos
-        time_difference = (vaccine.date_administered - now).total_seconds()
+        time_difference = (event.event_date - now).total_seconds()
         print(f"Diferencia de tiempo en segundos: {time_difference}")
 
         # Revisar si la diferencia es exactamente o cercana a 24 horas (en segundos)
-        if 86340 <= time_difference <= 86400:
-            print(f"Dentro del rango de 24 horas. Procediendo a marcar la vacuna como notificada y a enviar email.")
-
-            # Marcar como enviada en la base de datos antes de enviar el correo
-            vaccine.notification_sent = True
-            save_vaccine(vaccine)
-            print(f"Vacuna marcada como notificada en la base de datos")
+        if 86340 <= time_difference <= 86400 and not event.notification_sent:
+            print(f"Dentro del rango de 24 horas. Procediendo a enviar email.")
 
             # Enviar el correo
-            enviar_correo(user_email, vaccine.dog.name, vaccine.name)
-            print(f"Correo enviado a {user_email} para la vacuna {vaccine.name} del perro {vaccine.dog.name}")
+            user_email = event.dog.owner.email
+            enviar_correo_event(user_email, event.dog.name, event.event_type, event.event_date)
+            print(f"Correo enviado a {user_email} para el evento {event.event_type} del perro {event.dog.name}")
+
+            # Marcar como enviada en la base de datos después de enviar el correo
+            event.notification_sent = True
+            save_event(event)
+            print(f"Evento marcado como notificado en la base de datos")
 
             return jsonify({'status': 'Email enviado'})
         else:
-            print(f"No es necesario enviar el email para la vacuna ID {vaccine_id}.")
+            print(f"No es necesario enviar el email para el evento ID {event_id}.")
             return jsonify({'status': 'No es necesario enviar el email'})
 
     except Exception as e:
